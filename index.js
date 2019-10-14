@@ -53,7 +53,7 @@ server.post('/api/login', (req, res) => {
   }
 });
 
-server.get('/api/users', (req, res) => {
+server.get('/api/users', protected, (req, res) => {
   Users.find()
     .then(users => {
       res.json(users);
@@ -63,7 +63,15 @@ server.get('/api/users', (req, res) => {
 
 // implement the protected middleware that will check for username and password
 // in the headers and if valid provide access to the endpoint
-function protected() {}
+function protected() {
+  let { username, password } = req.headers;
+  if (username && password) {
+    next();
+  }
+  else{
+    res.status(400).json({ message: 'please provide credentials' });
+  }
+}
 
 
 
